@@ -118,7 +118,9 @@ HTML page located in `src/main/resources/static`:
 
 Once the app is running, open:
 ```
-http://localhost:8080/swagger-ui.html
+- 🧭 Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- 📄 API Spec (JSON): [docs/swagger/openapi.json](docs/swagger/openapi.json)
+
 ```
 
 ## 📦 Postman Collection
