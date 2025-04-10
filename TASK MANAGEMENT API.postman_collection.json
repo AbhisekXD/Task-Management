@@ -1,0 +1,318 @@
+{
+	"info": {
+		"_postman_id": "2b77683c-94aa-4875-8625-0a29db38408f",
+		"name": "TASK MANAGEMENT API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32534285"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/auth/signup",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userName\": \"Admin\",\n  \"password\": \"admin123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"signup"
+					]
+				},
+				"description": "sign up api, the first user signing up will be ADMIN then all signing up users will be USER this api also return a jwt token "
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/auth/login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userName\": \"Admin\",\n  \"password\": \"admin123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"login"
+					]
+				},
+				"description": "login up api, this api returns a jwt token "
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/tasks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJyb2xlIjoiQURNSU4iLCJpc3MiOiJEZWFsZXJzIEF1dG8gQ2VudGVyIiwiaWQiOiIwN2M2MTMzZi1jNWQ5LTRkMmEtODVkZS0xZWFiYzExMTg0MzMiLCJ1c2VyTmFtZSI6IkFkbWluIiwiZXhwIjoxNzgwMjUzMzE3LCJpYXQiOjE3NDQyNTMzMTd9.g77VSyHFXCx2fs_pNSRd5V0hUavXknQK65idOK8-7U4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Task Management API\",\n  \"description\": \"JWT security implementataion\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/tasks",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tasks"
+					]
+				},
+				"description": "task creation api can be accesible by ADMIN only"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/tasks/6bd48c87-752f-4a47-965b-9043e2060990/assign/ec8ab6d9-301f-4ed9-a5ec-64a8d002e685",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJyb2xlIjoiQURNSU4iLCJpc3MiOiJEZWFsZXJzIEF1dG8gQ2VudGVyIiwiaWQiOiIwN2M2MTMzZi1jNWQ5LTRkMmEtODVkZS0xZWFiYzExMTg0MzMiLCJ1c2VyTmFtZSI6IkFkbWluIiwiZXhwIjoxNzgwMjUzMzE3LCJpYXQiOjE3NDQyNTMzMTd9.g77VSyHFXCx2fs_pNSRd5V0hUavXknQK65idOK8-7U4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Task Management API\",\n  \"description\": \"JWT security implementataion\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/tasks/6bd48c87-752f-4a47-965b-9043e2060990/assign/ec8ab6d9-301f-4ed9-a5ec-64a8d002e685",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tasks",
+						"6bd48c87-752f-4a47-965b-9043e2060990",
+						"assign",
+						"ec8ab6d9-301f-4ed9-a5ec-64a8d002e685"
+					]
+				},
+				"description": "task assignment api to USER, can be accesible by ADMIN only"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/tasks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJyb2xlIjoiVVNFUiIsImlzcyI6IkRlYWxlcnMgQXV0byBDZW50ZXIiLCJpZCI6ImVjOGFiNmQ5LTMwMWYtNGVkOS1hNWVjLTY0YThkMDAyZTY4NSIsInVzZXJOYW1lIjoiVXNlciIsImV4cCI6MTc4MDI1MzM4MiwiaWF0IjoxNzQ0MjUzMzgyfQ.mCzeBJbG_OkAiosKS_C4XBjUeyj-w4d0u-Pwe26kpmE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/tasks",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tasks"
+					]
+				},
+				"description": "task assigned to USE get api, can be accesible by USER only"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/tasks/6bd48c87-752f-4a47-965b-9043e2060990/status?status=PENDING",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJyb2xlIjoiVVNFUiIsImlzcyI6IkRlYWxlcnMgQXV0byBDZW50ZXIiLCJpZCI6ImVjOGFiNmQ5LTMwMWYtNGVkOS1hNWVjLTY0YThkMDAyZTY4NSIsInVzZXJOYW1lIjoiVXNlciIsImV4cCI6MTc4MDI1MzM4MiwiaWF0IjoxNzQ0MjUzMzgyfQ.mCzeBJbG_OkAiosKS_C4XBjUeyj-w4d0u-Pwe26kpmE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/tasks/6bd48c87-752f-4a47-965b-9043e2060990/status?status=PENDING",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tasks",
+						"6bd48c87-752f-4a47-965b-9043e2060990",
+						"status"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "PENDING"
+						}
+					]
+				},
+				"description": "task status update api, only accesible by USER"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/notifications",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJyb2xlIjoiVVNFUiIsImlzcyI6IkRlYWxlcnMgQXV0byBDZW50ZXIiLCJpZCI6ImVjOGFiNmQ5LTMwMWYtNGVkOS1hNWVjLTY0YThkMDAyZTY4NSIsInVzZXJOYW1lIjoiVXNlciIsImV4cCI6MTc4MDI1MzM4MiwiaWF0IjoxNzQ0MjUzMzgyfQ.mCzeBJbG_OkAiosKS_C4XBjUeyj-w4d0u-Pwe26kpmE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/notifications",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"notifications"
+					]
+				},
+				"description": " API to get the unread notifications with count, accesible to USER only"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/notifications/all",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJyb2xlIjoiVVNFUiIsImlzcyI6IkRlYWxlcnMgQXV0byBDZW50ZXIiLCJpZCI6ImVjOGFiNmQ5LTMwMWYtNGVkOS1hNWVjLTY0YThkMDAyZTY4NSIsInVzZXJOYW1lIjoiVXNlciIsImV4cCI6MTc4MDI1MzM4MiwiaWF0IjoxNzQ0MjUzMzgyfQ.mCzeBJbG_OkAiosKS_C4XBjUeyj-w4d0u-Pwe26kpmE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/notifications/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"notifications",
+						"all"
+					]
+				},
+				"description": " API to get the all notifications of a user with count, accesible to USER only"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/notifications/331a7121-3e1f-4381-9ed1-d61c45eebed3/read",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJyb2xlIjoiVVNFUiIsImlzcyI6IkRlYWxlcnMgQXV0byBDZW50ZXIiLCJpZCI6ImVjOGFiNmQ5LTMwMWYtNGVkOS1hNWVjLTY0YThkMDAyZTY4NSIsInVzZXJOYW1lIjoiVXNlciIsImV4cCI6MTc4MDI1MzM4MiwiaWF0IjoxNzQ0MjUzMzgyfQ.mCzeBJbG_OkAiosKS_C4XBjUeyj-w4d0u-Pwe26kpmE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/notifications/331a7121-3e1f-4381-9ed1-d61c45eebed3/read",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"notifications",
+						"331a7121-3e1f-4381-9ed1-d61c45eebed3",
+						"read"
+					]
+				},
+				"description": "API to mark a notification as read"
+			},
+			"response": []
+		}
+	]
+}
