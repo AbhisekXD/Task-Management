@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SSE Notification Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2em;
+    }
+    #notifications {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 1em;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h1>SSE Notification Test</h1>
+  <p>Open the browser developer console to see detailed logs.</p>
+  
+  <!-- Container to display notifications -->
+  <div id="notifications">
+    <h3>Notifications</h3>
+    <ul id="notificationList"></ul>
+  </div>
+  
+  <script>
+    // Replace 'your-user-id' with a valid UUID for testing
+    const userId = 'your-user-id';
+
+    // Establish connection to the SSE endpoint
+    // Ensure the URL matches the one configured in your Spring Boot application
+    const eventSource = new EventSource(`/api/notifications/stream/${userId}`);
+    
+    // Listen for events named "notification"
+    eventSource.addEventListener('notification', function(event) {
+      console.log("SSE Event received:", event);
+
+      // Parse the incoming data (assuming JSON format)
+      let data;
+      try {
+        data = JSON.parse(event.data);
+      } catch (error) {
+        console.error("Error parsing event data:", error);
+        return;
+      }
+      
+      // Append the notification to the list
+      const li = document.createElement("li");
+      li.textContent = `Notification ID: ${data.notificationId} - Message: ${data.message}`;
+      document.getElementById("notificationList").appendChild(li);
+    });
+
+    // Optionally listen for errors
+    eventSource.onerror = function(error) {
+      console.error("EventSource encountered an error:", error);
+    };
+    
+    // Optional: listen for the open event when connection is established
+    eventSource.onopen = function() {
+      console.log("SSE connection established.");
+    };
+  </script>
+</body>
+</html>
