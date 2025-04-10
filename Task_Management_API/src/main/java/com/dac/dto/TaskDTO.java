@@ -7,7 +7,7 @@ public class TaskDTO {
     private String title;
     private String description;
     private String status;
-    private UserResponseDTO assignedTo;
+    //private UserResponseDTO assignedTo;
 
     
     public UUID getId() {
@@ -42,11 +42,11 @@ public class TaskDTO {
         this.status = status;
     }
 
-    public UserResponseDTO getAssignedTo() {
-        return assignedTo;
-    }
-
-    public void setAssignedTo(UserResponseDTO assignedTo) {
-        this.assignedTo = assignedTo;
-    }
+//    public UserResponseDTO getAssignedTo() {
+//        return assignedTo;
+//    }
+//
+//    public void setAssignedTo(UserResponseDTO assignedTo) {
+//        this.assignedTo = assignedTo;
+//    }
 }

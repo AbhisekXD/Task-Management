@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.dac.controller.NotificationSseController;
 import com.dac.dto.NotificationDTO;
-import com.dac.dto.UnreadNotificationsResponse;
+import com.dac.dto.NotificationsResponse;
 import com.dac.model.Notification;
 import com.dac.model.User;
 import com.dac.repository.NotificationRepository;
@@ -55,7 +55,7 @@ public class NotificationService {
         
     }
     
-    public UnreadNotificationsResponse getUnreadNotifications(UUID userId) {
+    public NotificationsResponse getUnreadNotifications(UUID userId) {
         List<NotificationDTO> dtoList = notificationRepository.findByUserId_IdAndIsReadFalse(userId)
             .stream()
             .map(n -> new NotificationDTO(
@@ -66,11 +66,11 @@ public class NotificationService {
                     n.isRead()))
             .toList();
 
-        return new UnreadNotificationsResponse(dtoList.size(), dtoList);
+        return new NotificationsResponse(dtoList.size(), dtoList);
     }
     
-    public List<NotificationDTO> getAllNotifications(UUID userId) {
-        return notificationRepository.findByUserId_Id(userId)
+    public NotificationsResponse getAllNotifications(UUID userId) {
+    	List<NotificationDTO> dtoList  = notificationRepository.findByUserId_Id(userId)
                 .stream()
                 .map(n -> new NotificationDTO(
                         n.getId(),
@@ -79,6 +79,8 @@ public class NotificationService {
                         n.getTimeStamp(),
                         n.isRead()))
                 .toList();
+        
+        return new NotificationsResponse(dtoList.size(), dtoList);
     }
     
     public void markAsRead(UUID notificationId) {

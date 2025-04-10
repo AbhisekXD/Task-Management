@@ -32,8 +32,11 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(requests -> requests.requestMatchers("/notifications/**")
-						.hasAuthority("ROLE_USER").requestMatchers("/**").permitAll().anyRequest().authenticated())
+				.authorizeHttpRequests(requests -> requests
+//						.requestMatchers("/notifications/**").hasAuthority("ROLE_USER")
+						.requestMatchers("/**").permitAll()
+						.anyRequest()
+						.authenticated())
 
 				.exceptionHandling(handling -> handling.authenticationEntryPoint((request, response, authException) -> {
 					response.setContentType("application/json");

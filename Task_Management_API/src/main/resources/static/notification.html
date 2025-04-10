@@ -2,66 +2,116 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SSE Notification Test</title>
+  <title>Live Notifications</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 2em;
-    }
-    #notifications {
-      margin-top: 20px;
+    body { font-family: sans-serif; padding: 20px; }
+    #live-notifications { margin-top: 20px; }
+    .notification {
+      margin-bottom: 10px;
+      padding: 10px;
       border: 1px solid #ccc;
-      padding: 1em;
+      border-radius: 5px;
       background-color: #f9f9f9;
     }
+    #controls { margin-top: 10px; }
+    button { margin-left: 5px; }
   </style>
 </head>
 <body>
-  <h1>SSE Notification Test</h1>
-  <p>Open the browser developer console to see detailed logs.</p>
-  
-  <!-- Container to display notifications -->
-  <div id="notifications">
-    <h3>Notifications</h3>
-    <ul id="notificationList"></ul>
-  </div>
-  
+  <h2>🔔 Live Notifications</h2>
+
+  <label for="userId">User ID (UUID):</label>
+  <input type="text" id="userId" placeholder="Enter user ID" size="40">
+  <button id="connectBtn">Connect</button>
+  <button id="clearAllBtn">Clear All</button>
+
+  <div id="live-notifications"></div>
+
+  <audio id="notifySound" src="notification.wav" preload="auto"></audio>
+
   <script>
-    // Replace 'your-user-id' with a valid UUID for testing
-    const userId = 'your-user-id';
+    let eventSource;
+    let currentUserId;
 
-    // Establish connection to the SSE endpoint
-    // Ensure the URL matches the one configured in your Spring Boot application
-    const eventSource = new EventSource(`/api/notifications/stream/${userId}`);
-    
-    // Listen for events named "notification"
-    eventSource.addEventListener('notification', function(event) {
-      console.log("SSE Event received:", event);
+    // Connect to SSE stream using the provided userId.
+    function connectToSSE(userId) {
+      if (eventSource) {
+        eventSource.close();
+      }
 
-      // Parse the incoming data (assuming JSON format)
-      let data;
-      try {
-        data = JSON.parse(event.data);
-      } catch (error) {
-        console.error("Error parsing event data:", error);
+      eventSource = new EventSource(`/api/notifications/stream/${userId}`);
+      currentUserId = userId;
+
+      eventSource.addEventListener('notification', (event) => {
+        const data = JSON.parse(event.data);
+        // Validate that payload contains notificationId and message.
+        if (!data.notificationId || !data.message) {
+          console.warn("Invalid notification payload:", data);
+          return;
+        }
+
+        // Immediately mark the notification as read.
+        markNotificationAsRead(data.notificationId);
+
+        // Display the notification on-screen.
+        const container = document.getElementById("live-notifications");
+        const div = document.createElement("div");
+        div.className = "notification";
+        div.textContent = `🔔 ${data.message}`;
+        container.prepend(div);
+
+        // Play the notification sound and vibrate.
+        document.getElementById("notifySound").play().catch(e => console.warn("Sound blocked:", e));
+        if (navigator.vibrate) {
+          navigator.vibrate(200);
+        }
+
+        // Keep the notification on-screen for at least 10 seconds.
+        setTimeout(() => {
+          div.remove();
+        }, 10000);
+      });
+
+      eventSource.addEventListener('ping', (event) => {
+        console.log("💓 Heartbeat:", event.data);
+      });
+
+      eventSource.onopen = () => {
+        console.log("✅ Connected to SSE stream for user:", userId);
+      };
+
+      eventSource.onerror = () => {
+        console.warn("⚠️ SSE disconnected. Retrying in 5 seconds...");
+        eventSource.close();
+        setTimeout(() => connectToSSE(userId), 5000);
+      };
+    }
+
+    // Call the API to mark a notification as read via PUT /notifications/{id}/read.
+    function markNotificationAsRead(notificationId) {
+      fetch(`/notifications/${notificationId}/read`, {
+        method: 'PUT'
+      })
+      .then(response => {
+        if (!response.ok) {
+          console.error("Failed to mark notification as read", response);
+        }
+      })
+      .catch(err => console.error("Error marking notification as read:", err));
+    }
+
+    document.getElementById('connectBtn').addEventListener('click', () => {
+      const userId = document.getElementById('userId').value.trim();
+      if (!userId) {
+        alert("Please enter a valid user ID.");
         return;
       }
-      
-      // Append the notification to the list
-      const li = document.createElement("li");
-      li.textContent = `Notification ID: ${data.notificationId} - Message: ${data.message}`;
-      document.getElementById("notificationList").appendChild(li);
+      connectToSSE(userId);
     });
 
-    // Optionally listen for errors
-    eventSource.onerror = function(error) {
-      console.error("EventSource encountered an error:", error);
-    };
-    
-    // Optional: listen for the open event when connection is established
-    eventSource.onopen = function() {
-      console.log("SSE connection established.");
-    };
+    document.getElementById('clearAllBtn').addEventListener('click', () => {
+      document.getElementById("live-notifications").innerHTML = '';
+    });
   </script>
 </body>
 </html>

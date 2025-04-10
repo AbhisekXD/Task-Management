@@ -47,10 +47,10 @@ public class TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
 
-//        if (task.getAssignedTo() != null) {
-//            throw new IllegalArgumentException("Task is already assigned to user: " 
-//                    + task.getAssignedTo().getUserName());
-//        }	
+        if (task.getAssignedTo() != null) {
+            throw new IllegalArgumentException("Task is already assigned to user: " 
+                    + task.getAssignedTo().getUserName());
+        }	
         
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));

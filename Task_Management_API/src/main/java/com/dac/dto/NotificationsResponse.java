@@ -2,12 +2,12 @@ package com.dac.dto;
 
 import java.util.List;
 
-public class UnreadNotificationsResponse {
+public class NotificationsResponse {
 	
     private long count;
     private List<NotificationDTO> notifications;
 
-    public UnreadNotificationsResponse(long count, List<NotificationDTO> notifications) {
+    public NotificationsResponse(long count, List<NotificationDTO> notifications) {
         this.count = count;
         this.notifications = notifications;
     }
