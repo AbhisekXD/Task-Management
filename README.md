@@ -1,5 +1,3 @@
-Here’s a **clean and professional** version of your README with **icons/emojis** used for better visual structure, no excessive formatting (like `**bold**` unless needed), and all unnecessary markup removed:
-
 ---
 
 ```markdown
