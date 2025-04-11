@@ -1,11 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Live Notifications</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    #live-notifications { margin-top: 20px; }
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    label, input, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    input {
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #controls {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    #live-notifications {
+      margin-top: 20px;
+    }
+
     .notification {
       margin-bottom: 10px;
       padding: 10px;
@@ -13,27 +60,79 @@
       border-radius: 5px;
       background-color: #f9f9f9;
     }
-    #controls { margin-top: 10px; }
-    button { margin-left: 5px; }
+
+    / Popup message /
+    #popup {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #28a745;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 9999;
+    }
+
+    #popup.show {
+      opacity: 1;
+    }
+
+    @media (min-width: 600px) {
+      label, input, button {
+        display: inline-block;
+        width: auto;
+        margin-right: 10px;
+      }
+
+      input {
+        width: 300px;
+      }
+
+      #controls {
+        flex-wrap: nowrap;
+      }
+    }
   </style>
 </head>
 <body>
   <h2>🔔 Live Notifications</h2>
 
-  <label for="userId">User ID (UUID):</label>
-  <input type="text" id="userId" placeholder="Enter user ID" size="40">
-  <button id="connectBtn">Connect</button>
-  <button id="clearAllBtn">Clear All</button>
+  <div id="controls">
+    <label for="userId">User ID (UUID):</label>
+    <input type="text" id="userId" placeholder="Enter user ID">
+    <button id="connectBtn">Connect</button>
+    <button id="disconnectBtn" style="display:none;">Disconnect</button>
+    <button id="clearAllBtn">Clear All</button>
+  </div>
 
   <div id="live-notifications"></div>
 
-  <audio id="notifySound" src="notification.wav" preload="auto"></audio>
+  <!-- Popup for connection/disconnection messages -->
+  <div id="popup">✅ Connected successfully!</div>
+
+  <audio id="notifySound" src="notification.mp3" preload="auto"></audio>
 
   <script>
     let eventSource;
     let currentUserId;
 
-    // Connect to SSE stream using the provided userId.
+    function showPopup(message) {
+      const popup = document.getElementById("popup");
+      popup.textContent = message;
+      popup.classList.add("show");
+      setTimeout(() => {
+        popup.classList.remove("show");
+      }, 2000);
+    }
+
+    function toggleButtons(isConnected) {
+      document.getElementById('connectBtn').style.display = isConnected ? 'none' : 'inline-block';
+      document.getElementById('disconnectBtn').style.display = isConnected ? 'inline-block' : 'none';
+    }
+
     function connectToSSE(userId) {
       if (eventSource) {
         eventSource.close();
@@ -44,32 +143,27 @@
 
       eventSource.addEventListener('notification', (event) => {
         const data = JSON.parse(event.data);
-        // Validate that payload contains notificationId and message.
         if (!data.notificationId || !data.message) {
           console.warn("Invalid notification payload:", data);
           return;
         }
 
-        // Immediately mark the notification as read.
         markNotificationAsRead(data.notificationId);
 
-        // Display the notification on-screen.
         const container = document.getElementById("live-notifications");
         const div = document.createElement("div");
         div.className = "notification";
         div.textContent = `🔔 ${data.message}`;
         container.prepend(div);
 
-        // Play the notification sound and vibrate.
         document.getElementById("notifySound").play().catch(e => console.warn("Sound blocked:", e));
         if (navigator.vibrate) {
-          navigator.vibrate(200);
+          navigator.vibrate([200, 100, 200]);
         }
 
-        // Keep the notification on-screen for at least 10 seconds.
         setTimeout(() => {
           div.remove();
-        }, 10000);
+        }, 5000);
       });
 
       eventSource.addEventListener('ping', (event) => {
@@ -78,6 +172,8 @@
 
       eventSource.onopen = () => {
         console.log("✅ Connected to SSE stream for user:", userId);
+        showPopup("✅ Connected successfully!");
+        toggleButtons(true);
       };
 
       eventSource.onerror = () => {
@@ -87,7 +183,6 @@
       };
     }
 
-    // Call the API to mark a notification as read via PUT /notifications/{id}/read.
     function markNotificationAsRead(notificationId) {
       fetch(`/notifications/${notificationId}/read`, {
         method: 'PUT'
@@ -109,9 +204,19 @@
       connectToSSE(userId);
     });
 
+    document.getElementById('disconnectBtn').addEventListener('click', () => {
+      if (eventSource) {
+        eventSource.close();
+        eventSource = null;
+        toggleButtons(false);
+        showPopup("🔌 Disconnected.");
+        console.log("🔌 Disconnected from SSE stream.");
+      }
+    });
+
     document.getElementById('clearAllBtn').addEventListener('click', () => {
       document.getElementById("live-notifications").innerHTML = '';
     });
-  </script>
+  </script>in 
 </body>
 </html>
